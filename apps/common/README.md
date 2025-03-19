@@ -14,6 +14,9 @@
 3. poetry 설치
 
 - pipx install poetry
+- 환경 변수(~/.zshrc)에 poetry directory 추가
+  - export PATH="$HOME/.local/bin:$PATH"
+  - source ~/.zshrc
 - poetry --version
 
 4. python3.11로 가상환경 생성
