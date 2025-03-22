@@ -16,6 +16,7 @@ def grpc_server():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     stt_pb2_grpc.add_STTServiceServicer_to_server(STTServiceServicer(), server)
     server.add_insecure_port("[::]:50051")
+    server.add_insecure_port("0.0.0.0:50051")
     server.start()
     print("gRPC 서버가 50051 포트에서 실행 중...")
     server.wait_for_termination()
