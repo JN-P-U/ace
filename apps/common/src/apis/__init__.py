@@ -1,5 +1,5 @@
-from apis.stt import root_router, stt_router
 from fastapi import FastAPI
+from src.apis.stt import root_router, stt_router
 
 app = FastAPI(
     title="Common Server API",

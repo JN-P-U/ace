@@ -1,5 +1,5 @@
 [project]
-name = "common"
+name = "test_client"
 version = "0.1.0"
 description = ""
 authors = [
@@ -8,16 +8,12 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "fastapi (>=0.115.11,<0.116.0)",
-    "uvicorn (>=0.34.0,<0.35.0)",
-    "azure-cognitiveservices-speech (>=1.43.0,<2.0.0)",
-    "python-dotenv (>=1.0.1,<2.0.0)",
     "grpcio (>=1.71.0,<2.0.0)",
     "grpcio-tools (>=1.71.0,<2.0.0)"
 ]
 
 [tool.poetry]
-packages = [{include = "src"}]
+packages = [{include = "test_api", from = "src"}]
 
 
 [build-system]

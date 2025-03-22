@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package stt;
+
+// STT 기능 제공
+service STTService {
+  rpc Start(StartRequest) returns (StartResponse);
+  rpc Stop(StopRequest) returns (StopResponse);
+  rpc StreamRecognized(StreamRecognizedRequest) returns (stream StreamRecognizedResponse);
+}
+
+message StartRequest {}
+message StartResponse {
+  string message = 1; // "STT started" 등
+}
+
+message StopRequest {}
+message StopResponse {
+  string message = 1;       // "STT stopped" 등
+  repeated string results = 2;
+}
+
+message StreamRecognizedRequest {}
+message StreamRecognizedResponse {
+  string data = 1;  // 실시간 인식 결과 한 문장
+}
