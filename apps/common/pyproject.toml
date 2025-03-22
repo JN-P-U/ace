@@ -11,11 +11,13 @@ dependencies = [
     "fastapi (>=0.115.11,<0.116.0)",
     "uvicorn (>=0.34.0,<0.35.0)",
     "azure-cognitiveservices-speech (>=1.43.0,<2.0.0)",
-    "python-dotenv (>=1.0.1,<2.0.0)"
+    "python-dotenv (>=1.0.1,<2.0.0)",
+    "grpcio (>=1.71.0,<2.0.0)",
+    "grpcio-tools (>=1.71.0,<2.0.0)"
 ]
 
 [tool.poetry]
-packages = [{include = "common", from = "src"}]
+packages = [{include = "apis", from = "src"}]
 
 
 [build-system]

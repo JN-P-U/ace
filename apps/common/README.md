@@ -27,7 +27,9 @@
 
 - 실행 대상 서비스 진입
   ex : cd apps/common
-- 실행 : source $(poetry env info --path)/bin/activate
+
+- 실행1(최초) : chmod +x activate_poetry.sh
+- 실행2 : source ./activate_poetry.sh
 
 6. 의존성 설치
 
@@ -35,5 +37,21 @@
 
 7. 서버 실행
 
-- 로컬 실행 시 : ENV_FILE=.env.local poetry run python main.py
+- 로컬 실행 시 : env=local poetry run python main.py
 - 개발 실행 시 : poetry run python main.py
+
+8. gRPC 서버 실행
+
+- gRPC 의존성 설치: 
+  - poetry add grpcio grpcio-tools
+
+- gRPC 프로토콜 버퍼 컴파일 (필요한 경우):
+  - 예: poetry run python -m grpc_tools.protoc -I./protos --python_out=./apps/common/src/app --grpc_python_out=./apps/common/src/app ./protos/your_service.proto
+
+- 로컬 실행 시: 
+  - env=local poetry run python grpc_server.py
+
+- 개발 실행 시: 
+  - poetry run python grpc_server.py
+
+※ grpc_server.py 파일은 gRPC 서버 로직이 포함된 실행 스크립트입니다.

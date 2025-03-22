@@ -1,14 +1,24 @@
 # src/recognition/main.py
 import os
-import azure.cognitiveservices.speech as speechsdk
 import threading
 import time
-from queue import Queue, Empty
+from pathlib import Path
+from queue import Empty, Queue
+
+import azure.cognitiveservices.speech as speechsdk
 from dotenv import load_dotenv
 
 # .env 파일 로드
-env_file = os.getenv("ENV_FILE", ".env")
-load_dotenv(env_file)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+env_path = PROJECT_ROOT / "conf/"
+if os.getenv("env", "").lower() == "local":
+    env_path = env_path / ".env.local"
+else:
+    env_path = env_path / ".env"
+
+load_dotenv(env_path)
+# print("env_path : ", env_path)
 
 # 전역 변수: 현재 STT 상태와 관련 객체들을 저장
 speech_key = os.getenv("SPEECH_KEY")
@@ -19,6 +29,7 @@ running = False
 stt_queue = Queue()
 stt_results = []
 
+
 def start_continuous_recognition():
     global speech_recognizer, recognition_thread, running
     if running:
@@ -28,14 +39,18 @@ def start_continuous_recognition():
 
     service_speech_key = speech_key
     service_speech_region = speech_region
-    print('service_speech_key : ', service_speech_key)
-    print('service_speech_region : ', service_speech_region)
-    print('speech_language : ', speech_language)
-    speech_config = speechsdk.SpeechConfig(subscription=service_speech_key, region=service_speech_region)
+    print("service_speech_key : ", service_speech_key)
+    print("service_speech_region : ", service_speech_region)
+    print("speech_language : ", speech_language)
+    speech_config = speechsdk.SpeechConfig(
+        subscription=service_speech_key, region=service_speech_region
+    )
     speech_config.speech_recognition_language = speech_language
 
     audio_config = speechsdk.audio.AudioConfig(use_default_microphone=True)
-    speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
+    speech_recognizer = speechsdk.SpeechRecognizer(
+        speech_config=speech_config, audio_config=audio_config
+    )
 
     # 이벤트 핸들러: 인식 중 및 인식 완료 시 결과 저장
     def recognizing_handler(evt):
@@ -75,6 +90,7 @@ def start_continuous_recognition():
     recognition_thread = threading.Thread(target=recognition_loop, daemon=True)
     recognition_thread.start()
 
+
 def stop_continuous_recognition():
     global running, recognition_thread, stt_results
     if not running:
@@ -84,8 +100,9 @@ def stop_continuous_recognition():
     if recognition_thread:
         recognition_thread.join(timeout=5)
         print("인식 스레드 종료됨.")
-    
+
     return stt_results
+
 
 def stt_result_generator():
     """실시간으로 인식 결과를 SSE 형식으로 반환하는 제너레이터"""
