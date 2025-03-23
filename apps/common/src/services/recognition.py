@@ -67,7 +67,7 @@ def start_continuous_recognition_with_stream(audio_input_stream=None):
 
     def recognized_handler(evt):
         text = evt.result.text
-        print("인식 완료:", text)
+        print("인식 완료 (콜백):", text)
         stt_queue.put(text)
         stt_results.append(text)
 
