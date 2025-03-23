@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from src.services.recognition import (
-    start_continuous_recognition,
+    start_continuous_recognition_with_stream,
     stop_continuous_recognition,
     stt_result_generator,
 )
@@ -28,7 +28,7 @@ stt_router = APIRouter(prefix="/stt", tags=["STT"])
 def start_stt():
 
     # STT 세션 시작
-    start_continuous_recognition()
+    start_continuous_recognition_with_stream()
 
     # 인식 결과 스트리밍 응답 (SSE)
     return StreamingResponse(stt_result_generator(), media_type="text/event-stream")
