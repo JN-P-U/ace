@@ -1,5 +1,8 @@
+import json
+import os
 import threading
 import time
+from datetime import datetime
 
 import grpc
 import pyaudio
@@ -57,39 +60,37 @@ def convert_pcm_to_wav(
 
 def run():
     channel = grpc.insecure_channel(server_address)
-    # channel = grpc.insecure_channel("mygrpcserver.home:50051")
     stub = stt_pb2_grpc.STTServiceStub(channel)
     stop_event = threading.Event()
 
-    # 10초 후에 Stop RPC를 호출하는 백그라운드 스레드
-    # def call_stop_after_delay():
-    #     time.sleep(10)
-    #     stop_event.set()
-    #     stop_response = stub.Stop(stt_pb2.StopRequest())
-    #     print("Stop Response:", stop_response.message)
-    #     print("Final Results:", stop_response.results)
     def call_stop_after_delay():
         time.sleep(10)
         stop_event.set()
         # 별도의 채널 생성
         stop_channel = grpc.insecure_channel(server_address)
-        # print("Stop Channel:", stop_channel)
+        print("Stop Channel:", stop_channel)
         stop_stub = stt_pb2_grpc.STTServiceStub(stop_channel)
-        # print("Stop Request")
+        print("Stop Request")
         stop_response = stop_stub.Stop(stt_pb2.StopRequest())
-        # stop_response = stub.Stop(stt_pb2.StopRequest())
         print("Stop Response:", stop_response)
         print("Stop Response:", stop_response.message)
         print("Final Results:", stop_response.results)
+        # 결과 파일 생성
+        result_folder = "result"
+        if not os.path.exists(result_folder):
+            os.makedirs(result_folder)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        file_path = os.path.join(result_folder, f"result_{timestamp}.json")
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(list(stop_response.results), f, ensure_ascii=False, indent=4)
+        print("Result saved to", file_path)
 
     threading.Thread(target=call_stop_after_delay, daemon=True).start()
 
-    # gRPC로 오디오 스트림 전송 및 서버 응답 처리
     responses = stub.StreamRecognized(audio_stream_generator(stop_event))
     for response in responses:
         print("StreamRecognized Response:", response.data)
 
-    # 오디오 캡처 종료 후, PCM 파일을 WAV 파일로 변환
     convert_pcm_to_wav("captured_audio.pcm", "captured_audio.wav")
 
 
