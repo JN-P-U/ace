@@ -30,7 +30,9 @@ stt_queue = Queue()
 stt_results = []
 
 
-def start_continuous_recognition():
+def start_continuous_recognition_with_stream(audio_input_stream=None):
+    """음성 인식을 시작합니다. audio_input_stream이 제공되면 이를 사용하고,
+    그렇지 않으면 기본 마이크를 사용합니다."""
     global speech_recognizer, recognition_thread, running
     if running:
         print("이미 인식이 실행 중입니다.")
@@ -39,20 +41,25 @@ def start_continuous_recognition():
 
     service_speech_key = speech_key
     service_speech_region = speech_region
-    print("service_speech_key : ", service_speech_key)
-    print("service_speech_region : ", service_speech_region)
-    print("speech_language : ", speech_language)
+    print("service_speech_key :", service_speech_key)
+    print("service_speech_region :", service_speech_region)
+    print("speech_language :", speech_language)
     speech_config = speechsdk.SpeechConfig(
         subscription=service_speech_key, region=service_speech_region
     )
     speech_config.speech_recognition_language = speech_language
 
-    audio_config = speechsdk.audio.AudioConfig(use_default_microphone=True)
+    if audio_input_stream is None:
+        # 기본 마이크 입력 사용
+        audio_config = speechsdk.audio.AudioConfig(use_default_microphone=True)
+    else:
+        # 외부에서 제공한 audio_input_stream 사용
+        audio_config = speechsdk.audio.AudioConfig(stream=audio_input_stream)
+
     speech_recognizer = speechsdk.SpeechRecognizer(
         speech_config=speech_config, audio_config=audio_config
     )
 
-    # 이벤트 핸들러: 인식 중 및 인식 완료 시 결과 저장
     def recognizing_handler(evt):
         text = evt.result.text
         print("인식 중:", text)
@@ -91,6 +98,7 @@ def start_continuous_recognition():
     recognition_thread.start()
 
 
+# 기존 stop_continuous_recognition()와 stt_result_generator() 함수는 그대로 둡니다.
 def stop_continuous_recognition():
     global running, recognition_thread, stt_results
     if not running:
@@ -100,17 +108,15 @@ def stop_continuous_recognition():
     if recognition_thread:
         recognition_thread.join(timeout=5)
         print("인식 스레드 종료됨.")
-
     return stt_results
 
 
 def stt_result_generator():
-    """실시간으로 인식 결과를 SSE 형식으로 반환하는 제너레이터"""
+    """실시간으로 인식 결과를 반환하는 제너레이터"""
     while running:
         try:
             result = stt_queue.get(timeout=1)
-            yield f"data: {result}\n\n"
+            yield result  # 필요에 따라 SSE 형식으로 가공할 수 있음
         except Empty:
             continue
-    # 세션 종료 후 최종 메시지 전송
-    yield "data: STT session ended\n\n"
+    yield "STT session ended"
