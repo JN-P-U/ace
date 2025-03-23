@@ -6,7 +6,8 @@ package stt;
 service STTService {
   rpc Start(StartRequest) returns (StartResponse);
   rpc Stop(StopRequest) returns (StopResponse);
-  rpc StreamRecognized(StreamRecognizedRequest) returns (stream StreamRecognizedResponse);
+  // 요청도 스트리밍 형태로 변경:
+  rpc StreamRecognized(stream StreamRecognizedRequest) returns (stream StreamRecognizedResponse);
 }
 
 message StartRequest {}

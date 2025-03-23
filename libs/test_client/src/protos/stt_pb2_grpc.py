@@ -49,7 +49,7 @@ class STTServiceStub(object):
             response_deserializer=stt__pb2.StopResponse.FromString,
             _registered_method=True,
         )
-        self.StreamRecognized = channel.unary_stream(
+        self.StreamRecognized = channel.stream_stream(
             "/stt.STTService/StreamRecognized",
             request_serializer=stt__pb2.StreamRecognizedRequest.SerializeToString,
             response_deserializer=stt__pb2.StreamRecognizedResponse.FromString,
@@ -72,8 +72,8 @@ class STTServiceServicer(object):
         context.set_details("Method not implemented!")
         raise NotImplementedError("Method not implemented!")
 
-    def StreamRecognized(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+    def StreamRecognized(self, request_iterator, context):
+        """요청도 스트리밍 형태로 변경:"""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details("Method not implemented!")
         raise NotImplementedError("Method not implemented!")
@@ -91,7 +91,7 @@ def add_STTServiceServicer_to_server(servicer, server):
             request_deserializer=stt__pb2.StopRequest.FromString,
             response_serializer=stt__pb2.StopResponse.SerializeToString,
         ),
-        "StreamRecognized": grpc.unary_stream_rpc_method_handler(
+        "StreamRecognized": grpc.stream_stream_rpc_method_handler(
             servicer.StreamRecognized,
             request_deserializer=stt__pb2.StreamRecognizedRequest.FromString,
             response_serializer=stt__pb2.StreamRecognizedResponse.SerializeToString,
@@ -170,7 +170,7 @@ class STTService(object):
 
     @staticmethod
     def StreamRecognized(
-        request,
+        request_iterator,
         target,
         options=(),
         channel_credentials=None,
@@ -181,8 +181,8 @@ class STTService(object):
         timeout=None,
         metadata=None,
     ):
-        return grpc.experimental.unary_stream(
-            request,
+        return grpc.experimental.stream_stream(
+            request_iterator,
             target,
             "/stt.STTService/StreamRecognized",
             stt__pb2.StreamRecognizedRequest.SerializeToString,

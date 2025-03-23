@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tstt.proto\x12\x03stt\"\x0e\n\x0cStartRequest\" \n\rStartResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"\r\n\x0bStopRequest\"0\n\x0cStopResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x0f\n\x07results\x18\x02 \x03(\t\"\'\n\x17StreamRecognizedRequest\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\"(\n\x18StreamRecognizedResponse\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\t2\xbc\x01\n\nSTTService\x12.\n\x05Start\x12\x11.stt.StartRequest\x1a\x12.stt.StartResponse\x12+\n\x04Stop\x12\x10.stt.StopRequest\x1a\x11.stt.StopResponse\x12Q\n\x10StreamRecognized\x12\x1c.stt.StreamRecognizedRequest\x1a\x1d.stt.StreamRecognizedResponse0\x01\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\tstt.proto\x12\x03stt\"\x0e\n\x0cStartRequest\" \n\rStartResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\"\r\n\x0bStopRequest\"0\n\x0cStopResponse\x12\x0f\n\x07message\x18\x01 \x01(\t\x12\x0f\n\x07results\x18\x02 \x03(\t\"\'\n\x17StreamRecognizedRequest\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\x0c\"(\n\x18StreamRecognizedResponse\x12\x0c\n\x04\x64\x61ta\x18\x01 \x01(\t2\xbe\x01\n\nSTTService\x12.\n\x05Start\x12\x11.stt.StartRequest\x1a\x12.stt.StartResponse\x12+\n\x04Stop\x12\x10.stt.StopRequest\x1a\x11.stt.StopResponse\x12S\n\x10StreamRecognized\x12\x1c.stt.StreamRecognizedRequest\x1a\x1d.stt.StreamRecognizedResponse(\x01\x30\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -44,5 +44,5 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_STREAMRECOGNIZEDRESPONSE']._serialized_start=174
   _globals['_STREAMRECOGNIZEDRESPONSE']._serialized_end=214
   _globals['_STTSERVICE']._serialized_start=217
-  _globals['_STTSERVICE']._serialized_end=405
+  _globals['_STTSERVICE']._serialized_end=407
 # @@protoc_insertion_point(module_scope)
