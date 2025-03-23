@@ -20,7 +20,9 @@ message StopResponse {
   repeated string results = 2;
 }
 
-message StreamRecognizedRequest {}
+message StreamRecognizedRequest {
+  bytes data = 1;
+}
 message StreamRecognizedResponse {
   string data = 1;  // 실시간 인식 결과 한 문장
 }
