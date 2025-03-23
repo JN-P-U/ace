@@ -11,6 +11,9 @@ CHANNELS = 1
 FORMAT = pyaudio.paInt16
 FRAMES_PER_BUFFER = 512
 
+# server_address = "localhost:50051"
+server_address = "mygrpcserver.home:50051"
+
 
 def audio_stream_generator(stop_event):
     audio = pyaudio.PyAudio()
@@ -53,7 +56,7 @@ def convert_pcm_to_wav(
 
 
 def run():
-    channel = grpc.insecure_channel("localhost:50051")
+    channel = grpc.insecure_channel(server_address)
     # channel = grpc.insecure_channel("mygrpcserver.home:50051")
     stub = stt_pb2_grpc.STTServiceStub(channel)
     stop_event = threading.Event()
@@ -69,11 +72,12 @@ def run():
         time.sleep(10)
         stop_event.set()
         # 별도의 채널 생성
-        stop_channel = grpc.insecure_channel("localhost:50051")
-        print("Stop Channel:", stop_channel)
+        stop_channel = grpc.insecure_channel(server_address)
+        # print("Stop Channel:", stop_channel)
         stop_stub = stt_pb2_grpc.STTServiceStub(stop_channel)
-        print("Stop Request")
+        # print("Stop Request")
         stop_response = stop_stub.Stop(stt_pb2.StopRequest())
+        # stop_response = stub.Stop(stt_pb2.StopRequest())
         print("Stop Response:", stop_response)
         print("Stop Response:", stop_response.message)
         print("Final Results:", stop_response.results)
